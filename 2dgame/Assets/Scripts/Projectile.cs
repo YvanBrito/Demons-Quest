@@ -1,0 +1,48 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Projectile : MonoBehaviour {
+
+    private SpriteRenderer spriteRenderer;
+    public float speed;
+    public float damage;
+
+	// Use this for initialization
+	void Start () {
+        spriteRenderer = transform.Find("Visuals").GetComponent<SpriteRenderer>();
+        //StartCoroutine(destroy());
+    }
+	
+	// Update is called once per frame
+	void Update () {
+        if (spriteRenderer.flipX)
+            transform.Translate(new Vector2(-speed*Time.deltaTime, 0));
+        else
+            transform.Translate(new Vector2(speed * Time.deltaTime, 0));
+        //print(Camera.main.WorldToScreenPoint(transform.position).x);
+        if (Camera.main.WorldToScreenPoint(transform.position).x > Screen.width || Camera.main.WorldToScreenPoint(transform.position).x < 0)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.name == "Player")
+            return;
+
+        if (collision.tag == "Enemy")
+        {
+            collision.GetComponent<Enemy>().Hit(damage);
+        }
+
+        Destroy(gameObject);
+    }
+
+    IEnumerator destroy()
+    {
+        yield return new WaitForSeconds(3);
+        Destroy(gameObject);
+    }
+}
