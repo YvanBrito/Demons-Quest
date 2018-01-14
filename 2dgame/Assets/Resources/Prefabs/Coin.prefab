@@ -22,7 +22,9 @@ GameObject:
   - component: {fileID: 212453342944673058}
   - component: {fileID: 95210118899561362}
   - component: {fileID: 58275140348776866}
-  m_Layer: 0
+  - component: {fileID: 114422110753911564}
+  - component: {fileID: 50170608913031002}
+  m_Layer: 13
   m_Name: Coin
   m_TagString: Coin
   m_Icon: {fileID: 0}
@@ -36,12 +38,32 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1805054286123056}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.51, y: 2.57, z: 0}
+  m_LocalPosition: {x: -2.065617, y: -1.0590451, z: 0}
   m_LocalScale: {x: 0.54113656, y: 0.54113656, z: 0.54113656}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!50 &50170608913031002
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1805054286123056}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 2
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4
 --- !u!58 &58275140348776866
 CircleCollider2D:
   m_ObjectHideFlags: 1
@@ -74,6 +96,17 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &114422110753911564
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1805054286123056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4100ea10fbbe2b04faf3990919f8ca24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!212 &212453342944673058
 SpriteRenderer:
   m_ObjectHideFlags: 1

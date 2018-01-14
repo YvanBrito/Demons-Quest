@@ -53,7 +53,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1447574584671970}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.1089525, y: -2.65, z: -0.1}
+  m_LocalPosition: {x: 26.13, y: -2.65, z: -0.1}
   m_LocalScale: {x: 1.2890482, y: 1.1209118, z: 1.1209118}
   m_Children:
   - {fileID: 4408439769970282}
@@ -146,7 +146,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc852a1d25907a14b892df32bb0e6f67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hp: 0
+  hp: 3
+  coinQty: 3
+  damage: 3
 --- !u!212 &212504641628110956
 SpriteRenderer:
   m_ObjectHideFlags: 1

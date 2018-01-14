@@ -9,8 +9,10 @@ public class Player : Entity
     public Projectile fireblast;
     public Slider healthBar;
     public float amount;
+	public Text scoreText;
 
     private Projectile projectile;
+	private int scorePoints;
 
     bool flying, androidJump, androidAttack;
 
@@ -18,8 +20,8 @@ public class Player : Entity
     {
         base.Start();
         speed = 7.0f;
-        gravity = -0.5f;
         jumpVelocity = 13;
+		scorePoints = 0;
 
         hp = healthBar.maxValue = 10;
     }
@@ -60,6 +62,7 @@ public class Player : Entity
         Animation();
 
         healthBar.value = hp;
+		scoreText.text = "Score: " + scorePoints.ToString();
 
         if (Input.GetKeyDown(KeyCode.Escape))
             Application.Quit();
@@ -86,6 +89,10 @@ public class Player : Entity
             androidAttack = false;
         }
     }
+
+	public void UpScore(int value){
+		scorePoints += value;
+	}
 
     #region Inputs
     public void Walk()

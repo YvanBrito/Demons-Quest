@@ -32,7 +32,7 @@ public class Projectile : MonoBehaviour {
         if (collision.name == "Player")
             return;
 
-        if (collision.tag == "Enemy")
+		if (collision.GetComponent<Enemy>() != null)
         {
             collision.GetComponent<Enemy>().Hit(damage);
         }

@@ -6,7 +6,8 @@ using UnityEngine;
 public class Entity : MonoBehaviour {
     
     [SerializeField] protected float hp;
-    protected float damage;
+	[SerializeField] protected float coinQty;
+	[SerializeField] protected float damage;
     protected float speed;
     protected Vector2 direction;
     protected Animator animator;
@@ -28,7 +29,8 @@ public class Entity : MonoBehaviour {
         animator = transform.Find("Visuals").GetComponent<Animator>();
         spriteRenderer = transform.Find("Visuals").GetComponent<SpriteRenderer>();
 
-        distToGround = boxCollider.bounds.extents.y;
+		distToGround = boxCollider.bounds.extents.y;
+		gravity = -0.5f;
         rigidBody2d.gravityScale = 0;
     }
 
@@ -69,34 +71,36 @@ public class Entity : MonoBehaviour {
 
     public void Hit(float damage)
     {
-        if (transform.name == "Player")
-        {
-            if (!invunerable)
-            {
-                hp -= damage;
-                if (hp <= 0)
-                {
-                    StartCoroutine(Death());
-                }
-                else
-                {
-                    StartCoroutine(Flash(1f, 0.05f));
-                }
-            }
-        }
-        else
-        {
-            hp -= damage;
-            if (hp <= 0)
-            {
-                StartCoroutine(Death());
-            }
-            else
-            {
-                if (!invunerable)
-                    StartCoroutine(Flash(1f, 0.05f));
-            }
-        }
+		if (damage > 0) {
+			if (transform.name == "Player")
+			{
+				if (!invunerable)
+				{
+					hp -= damage;
+					if (hp <= 0)
+					{
+						StartCoroutine(Death());
+					}
+					else
+					{
+						StartCoroutine(Flash(1f, 0.05f));
+					}
+				}
+			}
+			else
+			{
+				hp -= damage;
+				if (hp <= 0)
+				{
+					StartCoroutine(Death());
+				}
+				else
+				{
+					if (!invunerable)
+						StartCoroutine(Flash(1f, 0.05f));
+				}
+			}
+		}
     }
 
     IEnumerator Death()
@@ -109,9 +113,26 @@ public class Entity : MonoBehaviour {
             transform.Translate(Vector2.zero);
         }
 
-        animator.Play(transform.name + "Death");
-        yield return new WaitForSeconds(1.5f);
-        Destroy(gameObject);
+		if (transform.name == "Player") {
+			animator.Play (transform.name + "Death");
+			yield return new WaitForSeconds (1.5f);
+			//Destroy(gameObject);
+			GetComponentInChildren<SpriteRenderer>().enabled = false;
+			GetComponent<Collider2D> ().enabled = false;
+		} else {
+			print (transform.name);
+			GameObject destroyExplosion = Instantiate (Resources.Load<GameObject> ("Prefabs/ExplosionDestroy"), new Vector2(transform.position.x,transform.position.y+1f), Quaternion.identity);
+			spriteRenderer.enabled = false;
+			GetComponent<Collider2D> ().enabled = false;
+			yield return new WaitForSeconds (0.5f);
+			Destroy(gameObject);
+			Destroy(destroyExplosion);
+		}
+
+		Coin coin = Resources.Load<Coin> ("Prefabs/Coin");
+		for (int i = 0; i < coinQty; i++) {
+			Instantiate (coin, transform.position, Quaternion.identity);
+		}
     }
 
     IEnumerator Flash(float time, float intervalTime)
@@ -129,7 +150,10 @@ public class Entity : MonoBehaviour {
             index++;
             yield return new WaitForSeconds(intervalTime);
         }
-        spriteRenderer.enabled = true;
+		if (hp>0) 
+			spriteRenderer.enabled = true;
+		else
+			spriteRenderer.enabled = false;
         invunerable = false;
     }
 
@@ -143,7 +167,8 @@ public class Entity : MonoBehaviour {
                 return false;
             }
             else
-            {
+			{
+				print (hit.transform.name);
                 return true;
             }
         }
