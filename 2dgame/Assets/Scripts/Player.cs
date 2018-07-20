@@ -20,7 +20,6 @@ public class Player : Entity
     {
         base.Start();
         speed = 7.0f;
-        jumpVelocity = 13;
 		scorePoints = 0;
 
         hp = healthBar.maxValue = 10;

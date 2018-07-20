@@ -16,7 +16,7 @@ public class Entity : MonoBehaviour {
     protected BoxCollider2D boxCollider;
 
     protected float gravity;
-    protected float jumpVelocity;
+	[SerializeField] protected float jumpVelocity;
     protected float yVelocity;
     protected float distToGround;
     protected bool isRunning;
