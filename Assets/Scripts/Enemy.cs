@@ -4,9 +4,13 @@ using UnityEngine;
 
 public class Enemy : Entity {
 
+    Vector3 initialPos;
+
     public override void Start()
     {
         base.Start();
+        speed = 1.5f;
+        initialPos = transform.position;
     }
 
 	public void Update(){
@@ -18,11 +22,24 @@ public class Enemy : Entity {
 
 		if (hp > 0)
 		{
+            if (transform.position.x > initialPos.x - 3 && !spriteRenderer.flipX)
+            {
+                direction = new Vector2(-speed, 0);
+            }
+            else if (transform.position.x < initialPos.x + 3 && spriteRenderer.flipX)
+            {
+                direction = new Vector2(speed, 0);
+            }
+            else
+            {
+                spriteRenderer.flipX = !spriteRenderer.flipX;
+            }
+
 			transform.Translate(new Vector2(0, yVelocity * Time.deltaTime));
 		}
 	}
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnCollisionStay2D(Collision2D collision)
     {
         if (collision.transform.name == "Player")
         {

@@ -9,12 +9,15 @@ public class Player : Entity
     public Projectile fireblast;
     public Slider healthBar;
     public float amount;
+	public float speedHit;
 	public Text scoreText;
 
     private Projectile projectile;
 	private int scorePoints;
+	private AudioSource audioSource;
 
-    bool flying, androidJump, androidAttack;
+	bool flying, androidJump, androidAttack;
+	bool playSoundFire, posHit;
 
     public override void Start ()
     {
@@ -23,6 +26,8 @@ public class Player : Entity
 		scorePoints = 0;
 
         hp = healthBar.maxValue = 10;
+
+		audioSource = GetComponent<AudioSource> ();
     }
 
     // Update is called once per frame
@@ -31,15 +36,15 @@ public class Player : Entity
         {
             yVelocity = 0;
             flying = false;
+			posHit = false;
         }
 
         if (jumpInputs() && IsGrounded())
         {
-            print("Pulando");
             yVelocity = jumpVelocity;
         }
 
-        if (!flying && jumpInputs() && !IsGrounded())
+		if (!flying && jumpInputs() && !IsGrounded() && !posHit)
         {
             yVelocity = 0;
             flying = true;
@@ -50,11 +55,23 @@ public class Player : Entity
 
         if (!flying)
             yVelocity += gravity;
-
+		
         if (hp > 0)
-        {
-            Walk();
-            transform.Translate(new Vector2(0, yVelocity * Time.deltaTime));
+		{
+			if (hitted) {
+				posHit = true;
+				flying = false;
+				yVelocity = jumpVelocity/2;
+				StartCoroutine (hitVelocity(spriteRenderer.flipX));
+
+				hitted = false;
+			}
+
+			if (!posHit) {
+				Walk ();
+			}
+
+			transform.Translate(new Vector2(speedHit * Time.deltaTime, yVelocity * Time.deltaTime));
         }
 
         androidJump = false;
@@ -63,21 +80,50 @@ public class Player : Entity
         healthBar.value = hp;
 		scoreText.text = "Score: " + scorePoints.ToString();
 
+		PlayAudios ();
+
         if (Input.GetKeyDown(KeyCode.Escape))
             Application.Quit();
     }
 
-    void FixedUpdate()
-    {
-        rigidBody2d.velocity = direction;
-        direction = Vector2.zero;
-    }
+	IEnumerator hitVelocity(bool left){
+		if (left) {
+			speedHit = 2;
+		} else {
+			speedHit = -2;
+		}
+		yield return new WaitForSeconds(0.8f);
+		speedHit = 0;
+	}
+
+	void PlayAudios(){
+		if (flying) {
+			audioSource.clip = Resources.Load<AudioClip> ("SFX/WingFlap");
+			audioSource.loop = true;
+			audioSource.volume = 0.6f;
+			if (!audioSource.isPlaying)
+				audioSource.Play ();
+		} else if (jumpInputs () && !posHit && hp>0) {
+			audioSource.clip = Resources.Load<AudioClip> ("SFX/Jumping");
+			audioSource.loop = false;
+			audioSource.volume = 0.6f;
+			audioSource.Play ();
+		} else if (playSoundFire) {
+			audioSource.clip = Resources.Load<AudioClip> ("SFX/Fire");
+			audioSource.loop = false;
+			audioSource.volume = 0.6f;
+			audioSource.Play ();
+		}else if(audioSource.loop){
+			audioSource.Stop ();
+		}
+	}
 
     public override void Animation()
     {
         base.Animation();
-        if (attackInputs() && !projectile)
+		if (attackInputs() && !projectile && !posHit && hp>0)
         {
+			playSoundFire = true;
             animator.SetBool("isAttacking", true);
             projectile = Instantiate(fireblast, transform.Find("FireblastGun").position, Quaternion.identity);
             projectile.transform.Find("Visuals").GetComponent<SpriteRenderer>().flipX = spriteRenderer.flipX;
@@ -85,7 +131,7 @@ public class Player : Entity
         else
         {
             animator.SetBool("isAttacking", false);
-            androidAttack = false;
+			androidAttack = playSoundFire = false;
         }
     }
 

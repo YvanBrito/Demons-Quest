@@ -21,12 +21,10 @@ public class PressButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         else if (transform.name == "LeftButton")
         {
             player.amount = -1;
-            Debug.Log(this.gameObject.name + " Was Clicked Down.");
         }
         else if (transform.name == "RightButton")
         {
             player.amount = 1;
-            Debug.Log(this.gameObject.name + " Was Clicked Down.");
         }
     }
 
@@ -35,7 +33,6 @@ public class PressButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         if (transform.name == "RightButton" || transform.name == "LeftButton")
         {
             player.amount = 0;
-            Debug.Log(this.gameObject.name + " Was Clicked Up.");
         }
     }
 }

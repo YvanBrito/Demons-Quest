@@ -8,7 +8,7 @@ public class Entity : MonoBehaviour {
     [SerializeField] protected float hp;
 	[SerializeField] protected float coinQty;
 	[SerializeField] protected float damage;
-    protected float speed;
+	[SerializeField] protected float speed;
     protected Vector2 direction;
     protected Animator animator;
     protected SpriteRenderer spriteRenderer;
@@ -21,6 +21,7 @@ public class Entity : MonoBehaviour {
     protected float distToGround;
     protected bool isRunning;
     protected bool invunerable;
+	protected bool hitted;
 
     // Use this for initialization
     public virtual void Start () {
@@ -31,7 +32,14 @@ public class Entity : MonoBehaviour {
 
 		distToGround = boxCollider.bounds.extents.y;
 		gravity = -0.5f;
-        rigidBody2d.gravityScale = 0;
+		rigidBody2d.gravityScale = 0;
+		hitted = false;
+    }
+
+    void FixedUpdate()
+    {
+        rigidBody2d.velocity = direction;
+        direction = Vector2.zero;
     }
 
     public virtual void Animation()
@@ -83,6 +91,7 @@ public class Entity : MonoBehaviour {
 					}
 					else
 					{
+						hitted = true;
 						StartCoroutine(Flash(1f, 0.05f));
 					}
 				}
@@ -96,8 +105,9 @@ public class Entity : MonoBehaviour {
 				}
 				else
 				{
-					if (!invunerable)
+					if (!invunerable) {
 						StartCoroutine(Flash(1f, 0.05f));
+					}
 				}
 			}
 		}
@@ -116,7 +126,6 @@ public class Entity : MonoBehaviour {
 		if (transform.name == "Player") {
 			animator.Play (transform.name + "Death");
 			yield return new WaitForSeconds (1.5f);
-			//Destroy(gameObject);
 			GetComponentInChildren<SpriteRenderer>().enabled = false;
 			GetComponent<Collider2D> ().enabled = false;
 		} else {
@@ -124,14 +133,15 @@ public class Entity : MonoBehaviour {
 			GameObject destroyExplosion = Instantiate (Resources.Load<GameObject> ("Prefabs/ExplosionDestroy"), new Vector2(transform.position.x,transform.position.y+1f), Quaternion.identity);
 			spriteRenderer.enabled = false;
 			GetComponent<Collider2D> ().enabled = false;
+
+			Coin coin = Resources.Load<Coin> ("Prefabs/Coin");
+			for (int i = 0; i < coinQty; i++) {
+				Instantiate (coin, transform.position, Quaternion.identity);
+			}
+
 			yield return new WaitForSeconds (0.5f);
 			Destroy(gameObject);
 			Destroy(destroyExplosion);
-		}
-
-		Coin coin = Resources.Load<Coin> ("Prefabs/Coin");
-		for (int i = 0; i < coinQty; i++) {
-			Instantiate (coin, transform.position, Quaternion.identity);
 		}
     }
 
@@ -141,9 +151,11 @@ public class Entity : MonoBehaviour {
         int index = 0;
         
         animator.Play(transform.name + "Hurt");
-        invunerable = true;
+		invunerable = true;
         while (elapsedTime < time)
         {
+			if (hp <= 0)
+				break;
             spriteRenderer.enabled = !spriteRenderer.enabled;
 
             elapsedTime += Time.deltaTime + intervalTime;
@@ -154,7 +166,7 @@ public class Entity : MonoBehaviour {
 			spriteRenderer.enabled = true;
 		else
 			spriteRenderer.enabled = false;
-        invunerable = false;
+		invunerable = false;
     }
 
     public bool IsGrounded()
@@ -168,7 +180,6 @@ public class Entity : MonoBehaviour {
             }
             else
 			{
-				print (hit.transform.name);
                 return true;
             }
         }
