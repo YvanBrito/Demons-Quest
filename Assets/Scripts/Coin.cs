@@ -11,34 +11,34 @@ public class Coin : MonoBehaviour {
 
 	void Start () {
 		int cType = Random.Range (0, coinType.Length);
-		animator = GetComponent<Animator> ();
-		RuntimeAnimatorController newController = Resources.Load<RuntimeAnimatorController>("CollectableAnimations/" + coinType[cType]);
+		animator = GetComponentInChildren<Animator> ();
+		RuntimeAnimatorController newController = Resources.Load<RuntimeAnimatorController>("Animations/Coins/" + coinType[cType]);
 		animator.runtimeAnimatorController = newController;
 
 		switch (cType) {
 		case 0:
-			transform.localScale *= 0.8f;
+			transform.GetChild(0).localScale *= 0.8f;
 			value = 1;
 			break;
 		case 1:
-			transform.localScale *= 1.15f;
+			transform.GetChild(0).localScale *= 1.15f;
 			value = 5;
 			break;
 		default:
-			transform.localScale *= 1.25f;
+			transform.GetChild(0).localScale *= 1.25f;
 			value = 10;
 			break;
 		}
 
-		rb = GetComponent<Rigidbody2D> ();
-		rb.AddForce (new Vector2(Random.Range(-50, 50), 400));
+		rb = GetComponentInChildren<Rigidbody2D> ();
+		rb.AddForce (new Vector2(Random.Range(-50, 50), 150));
 	}
 
-	void OnCollisionEnter2D(Collision2D coll){
+	void OnTriggerEnter2D(Collider2D coll){
 		if (coll.gameObject.tag == "Player") {
-			Physics2D.IgnoreCollision (GetComponent<Collider2D>(), coll.collider);
+			//Physics2D.IgnoreCollision (GetComponent<Collider2D>(), coll.collider);
 			coll.gameObject.SendMessage("UpScore", value);
-			Destroy (gameObject);
+            Destroy(gameObject);
 		}
 	}
 }
