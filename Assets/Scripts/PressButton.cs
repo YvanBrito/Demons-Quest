@@ -16,7 +16,7 @@ public class PressButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         }
         else if (transform.name == "UpButton")
         {
-            player.Jump();
+            player.JumpAndroid();
         }
         else if (transform.name == "LeftButton")
         {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(BoxCollider2D))]
 public class Entity : MonoBehaviour {
     
     [SerializeField] protected float hp;
@@ -27,9 +28,17 @@ public class Entity : MonoBehaviour {
     public virtual void Start () {
         rigidBody2d = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
-        animator = transform.Find("Visuals").GetComponent<Animator>();
-        spriteRenderer = transform.Find("Visuals").GetComponent<SpriteRenderer>();
-
+        if (transform.Find("Visuals"))
+        {
+            animator = transform.Find("Visuals").GetComponent<Animator>();
+            spriteRenderer = transform.Find("Visuals").GetComponent<SpriteRenderer>();
+        }
+        else
+        {
+            animator = GetComponent<Animator>();
+            spriteRenderer = GetComponent<SpriteRenderer>();
+        }
+        
 		distToGround = boxCollider.bounds.extents.y;
 		gravity = -0.5f;
 		rigidBody2d.gravityScale = 0;
@@ -44,13 +53,27 @@ public class Entity : MonoBehaviour {
 
     public virtual void Animation()
     {
-        if (direction.x < 0)
+        if (transform.name == "Player")
         {
-            spriteRenderer.flipX = true;
+            if (direction.x < 0)
+            {
+                spriteRenderer.flipX = true;
+            }
+            else if (direction.x > 0)
+            {
+                spriteRenderer.flipX = false;
+            }
         }
-        else if (direction.x > 0)
+        else
         {
-            spriteRenderer.flipX = false;
+            if (direction.x < 0)
+            {
+                spriteRenderer.flipX = false;
+            }
+            else if (direction.x > 0)
+            {
+                spriteRenderer.flipX = true;
+            }
         }
 
         if (direction.x != 0)
@@ -187,5 +210,10 @@ public class Entity : MonoBehaviour {
         {
             return false;
         }
+    }
+
+    public void Jump()
+    {
+        yVelocity = jumpVelocity;
     }
 }

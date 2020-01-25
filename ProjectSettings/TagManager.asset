@@ -23,7 +23,7 @@ TagManager:
   - Player
   - Collectable
   - CoinPhysics
-  - 
+  - Destructible
   - 
   - 
   - 
@@ -41,6 +41,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 3381584123
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

@@ -41,7 +41,7 @@ public class Player : Entity
 
         if (jumpInputs() && IsGrounded())
         {
-            yVelocity = jumpVelocity;
+            Jump();
         }
 
 		if (!flying && jumpInputs() && !IsGrounded() && !posHit)
@@ -104,12 +104,12 @@ public class Player : Entity
 			if (!audioSource.isPlaying)
 				audioSource.Play ();
 		} else if (jumpInputs () && !posHit && hp>0) {
-			audioSource.clip = Resources.Load<AudioClip> ("SFX/Jumping");
+            audioSource.clip = Resources.Load<AudioClip> ("SFX/Jumping");
 			audioSource.loop = false;
 			audioSource.volume = 0.6f;
 			audioSource.Play ();
 		} else if (playSoundFire) {
-			audioSource.clip = Resources.Load<AudioClip> ("SFX/Fire");
+            audioSource.clip = Resources.Load<AudioClip> ("SFX/Fire");
 			audioSource.loop = false;
 			audioSource.volume = 0.6f;
 			audioSource.Play ();
@@ -167,7 +167,7 @@ public class Player : Entity
         androidAttack = true;
     }
 
-    public void Jump()
+    public void JumpAndroid()
     {
         androidJump = true;
     }
